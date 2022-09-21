@@ -1,10 +1,17 @@
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { Nav } from "../components/nav/Nav";
-import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
-  const hello = trpc.useQuery(["example.hello", { text: "from tRPC" }]);
+  const { status } = useSession();
+  const router = useRouter();
+
+  if (status === "unauthenticated") {
+    router.push("/login");
+    return null;
+  }
 
   return (
     <>
@@ -18,7 +25,10 @@ const Home: NextPage = () => {
         <Nav />
       </header>
 
-      <main className="container mx-auto flex flex-col items-center justify-center min-h-screen p-4"></main>
+      <main
+        data-testid="main"
+        className="container mx-auto flex flex-col items-center justify-center min-h-screen p-4"
+      ></main>
     </>
   );
 };

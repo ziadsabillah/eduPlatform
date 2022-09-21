@@ -1,7 +1,12 @@
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
 export const Nav = () => {
   // simple navigation with tailwindcss that has a home and login links
+
+  const { status, data } = useSession();
+  const isAuthenticated = status === "authenticated";
+
   return (
     <nav className="flex items-center justify-between flex-wrap bg-gray-800 p-6">
       <div className="flex items-center flex-shrink-0 text-white mr-6">
@@ -21,18 +26,43 @@ export const Nav = () => {
           </svg>
         </button>
       </div>
-      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+      <div className="text-sm">
+        {isAuthenticated && (
+          <div className="text-gray-200">{"Hi " + data?.user?.name}!</div>
+        )}
+      </div>
+      <div className="w-full block lg:flex lg:items-center lg:w-auto">
         <div className="text-sm lg:flex-grow">
           <Link href="/">
             <a className="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4">
               Home
             </a>
           </Link>
-          <Link href="/login">
-            <a className="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4">
-              Login
-            </a>
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link href="/profile">
+                <a className="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4">
+                  Profile
+                </a>
+              </Link>
+              <button
+                onClick={() =>
+                  signOut({
+                    redirect: false,
+                  })
+                }
+                className="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link href="/login">
+              <a className="block mt-4 lg:inline-block lg:mt-0 text-gray-200 hover:text-white mr-4">
+                Login
+              </a>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
