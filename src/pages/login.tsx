@@ -8,7 +8,7 @@ const LoginPage: NextPage = () => {
   const { push } = useRouter();
 
   if (status === "authenticated") {
-    push("/");
+    // push("/");
     return null;
   }
   return <LoginScreen />;
