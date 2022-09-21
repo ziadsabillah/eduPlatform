@@ -5,10 +5,10 @@ import { LoginScreen } from "../components/login/LoginScreen";
 
 const LoginPage: NextPage = () => {
   const { status } = useSession();
-  const router = useRouter();
+  const { push } = useRouter();
 
   if (status === "authenticated") {
-    router.push("/");
+    push("/");
     return null;
   }
   return <LoginScreen />;
