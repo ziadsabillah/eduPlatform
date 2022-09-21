@@ -3,7 +3,7 @@ import LoginPage from "../pages/login";
 
 import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
-import { useSession } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 
 import { RouterContext } from "next/dist/shared/lib/router-context";
 import { createMockRouter } from "./test-utils/createMockRouter";
@@ -29,18 +29,7 @@ jest.mock("next-auth/react", () => {
 });
 
 describe("LoginScreen", () => {
-  it("should render a button to sign in with google", () => {
-    render(<LoginScreen />);
-    // expect a button with text Sign In with Google to be in the document
-    expect(
-      screen.getByRole("button", { name: /Sign In with Google/i })
-    ).toBeInTheDocument();
-  });
-
   it("should call useSession on login to check if user has session or not", async () => {
-    // TODO - mock useSession to return authenticated
-    // and then check that the router is called with "/"
-    // and that the LoginScreen is not rendered
     const mockRouter = createMockRouter({});
     render(
       <RouterContext.Provider value={mockRouter}>
@@ -50,5 +39,22 @@ describe("LoginScreen", () => {
     await waitFor(() => {
       expect(useSession).toHaveBeenCalled();
     });
+  });
+  it("should render a button to sign in with google if user is not authenticated", () => {
+    render(<LoginScreen />);
+    // expect a button with text Sign In with Google to be in the document
+    expect(
+      screen.getByRole("button", { name: /Sign In with Google/i })
+    ).toBeInTheDocument();
+  });
+  it("should redirect to '/' if user is not authenticated", () => {
+    const mockRouter = createMockRouter({});
+    render(
+      <RouterContext.Provider value={mockRouter}>
+        <LoginPage />
+      </RouterContext.Provider>
+    );
+
+    expect(mockRouter.push).toHaveBeenCalledWith("/");
   });
 });
