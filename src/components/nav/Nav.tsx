@@ -28,7 +28,9 @@ export const Nav = () => {
       </div>
       <div className="text-sm">
         {isAuthenticated && (
-          <div className="text-gray-200">{"Hi " + data?.user?.name}!</div>
+          <div data-testid="greeting" className="text-gray-200">
+            {"Hi " + data?.user?.name}!
+          </div>
         )}
       </div>
       <div className="w-full block lg:flex lg:items-center lg:w-auto">
